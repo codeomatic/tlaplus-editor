@@ -1,7 +1,9 @@
 import './style.css';
-import { initEditors, layoutEditors } from './editor';
+import { initEditors, layoutEditors, getTlaContent, getCfgContent } from './editor';
 import { registerLanguages } from './tlaplus-language';
 import { initTreeSitter } from './tree-sitter-highlight';
+
+import type { TLCWorkerRequest, TLCWorkerResponse } from './tlcWorker';
 
 // ──────────────────────────────────────────────
 // Tab switching for editor pane
@@ -89,37 +91,87 @@ function setupResizeHandle(): void {
 }
 
 // ──────────────────────────────────────────────
-// Placeholder Run button handler
+// Run button handler & Web Worker management
 // ──────────────────────────────────────────────
 
-function setupRunButton(): void {
-  const btnRun = document.getElementById('btn-run');
-  const outputContainer = document.getElementById('output-container');
+let tlcWorker: Worker | null = null;
 
-  if (!btnRun || !outputContainer) return;
+function setupRunButton(): void {
+  const btnRun = document.getElementById('btn-run') as HTMLButtonElement | null;
+  const btnStop = document.getElementById('btn-stop') as HTMLButtonElement | null;
+  const outputContent = document.getElementById('output-content');
+  const emptyState = document.getElementById('output-empty-state');
+  const outputPane = document.getElementById('output-pane');
+
+  if (!btnRun || !btnStop || !outputContent || !emptyState || !outputPane) return;
 
   btnRun.addEventListener('click', () => {
-    // Clear placeholder
-    outputContainer.innerHTML = '';
+    const tlaContent = getTlaContent();
+    const cfgContent = getCfgContent();
 
-    const lines = [
-      { text: 'TLC2 Model Checker — not yet connected', cls: 'info' },
-      { text: '──────────────────────────────────────', cls: '' },
-      { text: 'This is a placeholder. The CheerpJ integration', cls: '' },
-      { text: 'will be added in a later stage.', cls: '' },
-      { text: '', cls: '' },
-      { text: '✓ UI Shell loaded successfully', cls: 'success' },
-    ];
+    if (!tlaContent.trim()) {
+      alert('TLA+ specification is empty.');
+      return;
+    }
 
-    lines.forEach((line, i) => {
-      setTimeout(() => {
-        const div = document.createElement('div');
-        div.className = `output-line${line.cls ? ` ${line.cls}` : ''}`;
-        div.textContent = line.text || '\u00A0';
-        outputContainer.appendChild(div);
-        outputContainer.scrollTop = outputContainer.scrollHeight;
-      }, i * 80);
-    });
+    // Hide empty state, show content area, and clear previous output
+    emptyState.style.display = 'none';
+    outputContent.style.display = 'block';
+    outputContent.textContent = 'Starting TLC Worker...\n';
+
+    // Update button states
+    btnRun.disabled = true;
+    btnStop.disabled = false;
+
+    // Terminate existing worker if any
+    if (tlcWorker) {
+      tlcWorker.terminate();
+    }
+
+    // Spawn new classic worker (to support importScripts for CheerpJ)
+    tlcWorker = new Worker(new URL('./tlcWorker.ts', import.meta.url));
+
+    tlcWorker.onmessage = (e: MessageEvent<TLCWorkerResponse>) => {
+      const res = e.data;
+      if (res.type === 'STDOUT' || res.type === 'STDERR') {
+        if (res.data) {
+          outputContent.textContent += res.data;
+          // Auto-scroll to bottom
+          outputPane.scrollTop = outputPane.scrollHeight;
+        }
+      } else if (res.type === 'EXIT') {
+        btnRun.disabled = false;
+        btnStop.disabled = true;
+        tlcWorker?.terminate();
+        tlcWorker = null;
+      }
+    };
+
+    tlcWorker.onerror = (err) => {
+      outputContent.textContent += `\n[Worker Error] ${err.message}\n`;
+      btnRun.disabled = false;
+      btnStop.disabled = true;
+      tlcWorker?.terminate();
+      tlcWorker = null;
+    };
+
+    // Send the RUN command with the code
+    const req: TLCWorkerRequest = {
+      type: 'RUN',
+      tlaContent,
+      cfgContent,
+    };
+    tlcWorker.postMessage(req);
+  });
+
+  btnStop.addEventListener('click', () => {
+    if (tlcWorker) {
+      tlcWorker.terminate();
+      tlcWorker = null;
+      outputContent.textContent += '\n\n[TLC Execution Cancelled by User]\n';
+    }
+    btnRun.disabled = false;
+    btnStop.disabled = true;
   });
 }
 

@@ -6,25 +6,25 @@ Traditional TLA+ environments require installing Java, downloading the Toolbox, 
 
 ## Core Capabilities
 
-1. **Client-Side Model Checking:** Run `tla2tools.jar` (which contains the TLC model checker) entirely in the browser.
-2. **Modern Editing Experience:** Provide a robust, feature-rich code editor for writing TLA+ specifications.
-3. **Advanced Syntax Highlighting:** Deliver accurate, semantic syntax highlighting for TLA+ code using sophisticated AST-based parsing.
-4. **Interactive Outputs & Diagnostics:** Parse the output of the TLC model checker to show states, values, and error traces in a structured UI, and map errors directly back to the code editor.
+- [x] **Client-Side Model Checking:** Run `tla2tools.jar` (which contains the TLC model checker) entirely in the browser using CheerpJ 4.2 (Java 11).
+- [ ] **Modern Editing Experience:** Provide a robust, feature-rich code editor for writing TLA+ specifications.
+- [ ] **Advanced Syntax Highlighting:** Deliver accurate, semantic syntax highlighting for TLA+ code using sophisticated AST-based parsing.
+- [ ] **Interactive Outputs & Diagnostics:** Parse the output of the TLC model checker to show states, values, and error traces in a structured UI, and map errors directly back to the code editor.
 
 ---
 
 # Technical Stack & Implementation Strategy
 
 ## Running Java in the Browser
-We will execute `tla2tools.jar` directly in the browser using **CheerpJ 3.0+**. 
-Unlike older versions, the latest CheerpJ architecture does not require statically "compiling" the JAR into WebAssembly ahead of time. Instead, it provides a WebAssembly-based JVM that executes unmodified `.jar` files in the browser using a JIT (Just-In-Time) compiler.
+We will execute `tla2tools.jar` directly in the browser using **CheerpJ 4.2+**. 
+Unlike older versions, the latest CheerpJ architecture does not require statically "compiling" the JAR into WebAssembly ahead of time. Instead, it provides a WebAssembly-based JVM (Java 11) that executes unmodified `.jar` files in the browser using a JIT (Just-In-Time) compiler.
 
 ### Proof-of-Concept Usage
 ```html
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
+    <script src="https://cjrtnc.leaningtech.com/4.2/loader.js"></script>
 </head>
 <body>
     <button onclick="runTLC()">Run Model Checker</button>
@@ -100,6 +100,7 @@ For the MVP, we will stick to a text-based configuration. Users will manually wr
 - [x] **Build Tool:** **Vite**, offering exceptionally fast reloading and native-like support for WebAssembly and Web Worker setups.
 - [x] **Editor:** **Monaco Editor**, offering a highly extensible and robust text manipulation environment inside the browser.
 - [x] **Syntax Highlighting:** **Tree-sitter** (`web-tree-sitter` + `tree-sitter-tlaplus`) for AST-based semantic highlighting in Monaco.
+- [x] **Model Checker Runtime:** **CheerpJ 4.2**, running the TLC `tla2tools.jar` in a WebWorker on Java 11 mode directly in the browser without a backend.
 
 ## Offline Support (Progressive Web App)
 For the MVP, the editor will require an active internet connection to download the CheerpJ runtime and the `tla2tools.jar`. However, the architecture will be designed with Progressive Web App (PWA) patterns in mind. Eventually, Service Workers will cache all assets, allowing users to write and check models while completely disconnected from the internet.

@@ -73,13 +73,17 @@
           Output
         </button>
       </div>
-      <div class="pane-content">
-        <div id="output-container" class="output-container">
-          <div class="output-placeholder">
+      <div class="pane-content relative h-full w-full">
+        <div id="output-pane" class="output-container h-full w-full relative">
+          <div id="output-empty-state"
+            class="output-placeholder h-full w-full flex flex-col items-center justify-center text-center">
             <span class="output-placeholder-icon">⊳</span>
             <p>Click <strong>Run</strong> to start model checking.</p>
             <p class="output-hint">The TLC model checker output will appear here.</p>
           </div>
+          <pre id="output-content"
+            class="absolute inset-0 p-4 font-mono text-sm text-gray-300 overflow-auto whitespace-pre-wrap"
+            style="display: none;"></pre>
         </div>
       </div>
     </section>

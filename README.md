@@ -17,6 +17,7 @@ Traditional TLA+ environments require installing Java, downloading the Toolbox, 
 - **Vite** for fast module bundling, dev server, and web worker setups.
 - **Monaco Editor** for a VS Code-like editing experience directly in the browser.
 - **Tree-sitter** (`web-tree-sitter`) for fast, robust parsing of TLA+ grammar.
+- **CheerpJ 4.2** to run the Java-based TLC model checker directly in the browser.
 
 ## Getting Started
 
