@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Generated WASM files (copied during postinstall)
+/public/tree-sitter.wasm

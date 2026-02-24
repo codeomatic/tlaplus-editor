@@ -1,4 +1,5 @@
 import * as monaco from 'monaco-editor';
+import { TLAPLUS_LANGUAGE_ID, CFG_LANGUAGE_ID } from './tlaplus-language';
 
 // ──────────────────────────────────────────────
 // Monaco worker environment
@@ -38,7 +39,18 @@ const THEME_NAME = 'tlaplus-dark';
 monaco.editor.defineTheme(THEME_NAME, {
     base: 'vs-dark',
     inherit: true,
-    rules: [],
+    rules: [
+        // Semantic token rules for Tree-sitter highlighting
+        { token: 'keyword', foreground: '#ff7b72', fontStyle: 'bold' },
+        { token: 'operator', foreground: '#ff7b72' },
+        { token: 'string', foreground: '#a5d6ff' },
+        { token: 'number', foreground: '#79c0ff' },
+        { token: 'comment', foreground: '#8b949e', fontStyle: 'italic' },
+        { token: 'function', foreground: '#d2a8ff' },
+        { token: 'variable', foreground: '#ffa657' },
+        { token: 'type', foreground: '#7ee787' },
+        { token: 'namespace', foreground: '#58a6ff' },
+    ],
     colors: {
         'editor.background': '#1c2333',
         'editor.foreground': '#e6edf3',
@@ -82,6 +94,7 @@ const SHARED_OPTIONS: monaco.editor.IStandaloneEditorConstructionOptions = {
     wordWrap: 'off',
     tabSize: 4,
     insertSpaces: true,
+    'semanticHighlighting.enabled': true,
 };
 
 // ──────────────────────────────────────────────
@@ -107,13 +120,13 @@ export function initEditors(): void {
     tlaEditor = monaco.editor.create(tlaContainer, {
         ...SHARED_OPTIONS,
         value: DEFAULT_TLA_CONTENT,
-        language: 'plaintext',
+        language: TLAPLUS_LANGUAGE_ID,
     });
 
     cfgEditor = monaco.editor.create(cfgContainer, {
         ...SHARED_OPTIONS,
         value: DEFAULT_CFG_CONTENT,
-        language: 'plaintext',
+        language: CFG_LANGUAGE_ID,
     });
 
     // Initial layout for the visible editor

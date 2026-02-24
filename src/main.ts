@@ -1,5 +1,7 @@
 import './style.css';
 import { initEditors, layoutEditors } from './editor';
+import { registerLanguages } from './tlaplus-language';
+import { initTreeSitter } from './tree-sitter-highlight';
 
 // ──────────────────────────────────────────────
 // Tab switching for editor pane
@@ -135,10 +137,21 @@ function setupWindowResize(): void {
 // Initialize
 // ──────────────────────────────────────────────
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   setupTabs();
   setupResizeHandle();
   setupRunButton();
   setupWindowResize();
+
+  // Register TLA+ and CFG languages before creating editors
+  registerLanguages();
+
+  // Initialize Tree-sitter highlighting (non-fatal if WASM fails to load)
+  try {
+    await initTreeSitter();
+  } catch (err) {
+    console.warn('[tree-sitter] Failed to initialize syntax highlighting:', err);
+  }
+
   initEditors();
 });

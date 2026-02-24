@@ -8,6 +8,7 @@ Traditional TLA+ environments require installing Java, downloading the Toolbox, 
 
 - **Client-Side Model Checking:** Runs `tla2tools.jar` via CheerpJ right in the browser.
 - **Modern Editing:** Provides a robust code editing experience powered by Monaco Editor.
+- **Semantic Highlighting:** Accurate TLA+ syntax highlighting using Tree-sitter AST parsing.
 - **Zero-Setup:** Opens and works without downloading JVMs or toolchains.
 
 ## Technology Stack
@@ -15,6 +16,7 @@ Traditional TLA+ environments require installing Java, downloading the Toolbox, 
 - **Vanilla TypeScript** to keep a minimal footprint and maximum performance.
 - **Vite** for fast module bundling, dev server, and web worker setups.
 - **Monaco Editor** for a VS Code-like editing experience directly in the browser.
+- **Tree-sitter** (`web-tree-sitter`) for fast, robust parsing of TLA+ grammar.
 
 ## Getting Started
 
@@ -29,6 +31,10 @@ Clone the repository and install the dependencies:
 ```bash
 npm install
 ```
+
+> **Note on WASM assets**: 
+> - The `public/tree-sitter.wasm` file is omitted from version control. It is automatically copied from the `web-tree-sitter` npm module into the `public/` directory via a `postinstall` script.
+> - The `public/tree-sitter-tlaplus.wasm` file *is* committed to the repository to keep the developer experience frictionless (avoiding cross-platform build issues or requiring developers to install Emscripten/C compilers). It was downloaded from the official [tree-sitter-tlaplus GitHub releases](https://github.com/tlaplus-community/tree-sitter-tlaplus/releases).
 
 ### Running Locally
 
