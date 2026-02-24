@@ -55,7 +55,8 @@
   padding: 0;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   overflow: hidden;
   font-family: var(--font-ui);
@@ -338,27 +339,12 @@ body {
 .editor-container {
   position: absolute;
   inset: 0;
-  overflow: auto;
+  overflow: hidden;
   display: none;
-  background: var(--bg-elevated);
 }
 
 .editor-container.active {
   display: block;
-}
-
-.editor-placeholder {
-  padding: 20px 24px;
-  font-family: var(--font-mono);
-  font-size: 13.5px;
-  line-height: 1.7;
-  color: var(--text-primary);
-  white-space: pre;
-  tab-size: 4;
-}
-
-.editor-placeholder code {
-  color: inherit;
 }
 
 /* ─── Output Container ─── */
@@ -436,8 +422,17 @@ body {
    ANIMATIONS
    ================================================================ */
 @keyframes pulse {
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50%      { opacity: 0.5; transform: scale(1.05); }
+
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(1.05);
+  }
 }
 
 /* ================================================================

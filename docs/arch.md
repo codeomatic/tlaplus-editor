@@ -98,6 +98,7 @@ For the MVP, we will stick to a text-based configuration. Users will manually wr
 ## Core Tech Stack
 - [x] **Language:** **Vanilla TypeScript** to avoid heavy UI frameworks like React/Vue for the core layer. This keeps the footprint minimal and performance high, given much of the UI is canvas/editor driven.
 - [x] **Build Tool:** **Vite**, offering exceptionally fast reloading and native-like support for WebAssembly and Web Worker setups.
+- [x] **Editor:** **Monaco Editor**, offering a highly extensible and robust text manipulation environment inside the browser.
 
 ## Offline Support (Progressive Web App)
 For the MVP, the editor will require an active internet connection to download the CheerpJ runtime and the `tla2tools.jar`. However, the architecture will be designed with Progressive Web App (PWA) patterns in mind. Eventually, Service Workers will cache all assets, allowing users to write and check models while completely disconnected from the internet.

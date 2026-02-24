@@ -57,23 +57,8 @@
         </button>
       </div>
       <div class="pane-content">
-        <div id="tla-editor-container" class="editor-container active">
-          <pre class="editor-placeholder"><code>---- MODULE Hello ----
-EXTENDS Naturals
-
-VARIABLE x
-
-Init == x = 0
-
-Next == x' = x + 1
-
-Spec == Init /\ [][Next]_x
-====</code></pre>
-        </div>
-        <div id="cfg-editor-container" class="editor-container">
-          <pre class="editor-placeholder"><code>SPECIFICATION Spec
-INVARIANT x &lt; 10</code></pre>
-        </div>
+        <div id="tla-editor-container" class="editor-container active"></div>
+        <div id="cfg-editor-container" class="editor-container"></div>
       </div>
     </section>
 

@@ -1,4 +1,5 @@
 import './style.css';
+import { initEditors, layoutEditors } from './editor';
 
 // ──────────────────────────────────────────────
 // Tab switching for editor pane
@@ -24,6 +25,9 @@ function setupTabs(): void {
       Object.entries(containers).forEach(([key, el]) => {
         el?.classList.toggle('active', key === targetTab);
       });
+
+      // Monaco needs a layout call when its container becomes visible
+      layoutEditors();
     });
   });
 }
@@ -68,6 +72,9 @@ function setupResizeHandle(): void {
 
     outputPane.style.flex = 'none';
     outputPane.style.width = `${totalWidth - clampedOffset - handleWidth / 2}px`;
+
+    // Re-layout editors as pane resizes
+    layoutEditors();
   });
 
   document.addEventListener('mouseup', () => {
@@ -115,6 +122,16 @@ function setupRunButton(): void {
 }
 
 // ──────────────────────────────────────────────
+// Window resize handler
+// ──────────────────────────────────────────────
+
+function setupWindowResize(): void {
+  window.addEventListener('resize', () => {
+    layoutEditors();
+  });
+}
+
+// ──────────────────────────────────────────────
 // Initialize
 // ──────────────────────────────────────────────
 
@@ -122,4 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
   setupTabs();
   setupResizeHandle();
   setupRunButton();
+  setupWindowResize();
+  initEditors();
 });

@@ -7,13 +7,14 @@ Traditional TLA+ environments require installing Java, downloading the Toolbox, 
 ## Features (In Progress)
 
 - **Client-Side Model Checking:** Runs `tla2tools.jar` via CheerpJ right in the browser.
-- **Modern Editing:** Provides a robust code editor.
+- **Modern Editing:** Provides a robust code editing experience powered by Monaco Editor.
 - **Zero-Setup:** Opens and works without downloading JVMs or toolchains.
 
 ## Technology Stack
 
 - **Vanilla TypeScript** to keep a minimal footprint and maximum performance.
 - **Vite** for fast module bundling, dev server, and web worker setups.
+- **Monaco Editor** for a VS Code-like editing experience directly in the browser.
 
 ## Getting Started
 
