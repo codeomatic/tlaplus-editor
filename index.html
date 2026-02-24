@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TLA+ Web Editor</title>
+  <meta name="description"
+    content="Write TLA+ specifications and run the TLC model checker directly in your browser — no installation required." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+</head>
+
+<body>
+  <!-- ===== Header / Toolbar ===== -->
+  <header id="toolbar">
+    <div class="toolbar-left">
+      <h1 class="app-title">
+        <span class="app-title-icon">⊨</span>
+        TLA<sup>+</sup> Editor
+      </h1>
+    </div>
+    <div class="toolbar-right">
+      <button id="btn-run" class="btn btn-run" title="Run Model Checker (Ctrl+Enter)">
+        <span class="btn-icon">▶</span>
+        Run
+      </button>
+      <button id="btn-stop" class="btn btn-stop" disabled title="Stop Model Checker">
+        <span class="btn-icon">■</span>
+        Stop
+      </button>
+      <div id="memory-indicator" class="memory-indicator" title="Memory usage">
+        <span class="memory-label">MEM</span>
+        <div class="memory-bar">
+          <div class="memory-bar-fill" style="width: 0%"></div>
+        </div>
+        <span class="memory-value">—</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Main Content ===== -->
+  <main id="workspace">
+    <!-- Left Pane: Editors -->
+    <section id="editor-pane" class="pane">
+      <div class="pane-tabs">
+        <button class="tab active" data-tab="tla" id="tab-tla">
+          <span class="tab-icon">📄</span>
+          Hello.tla
+        </button>
+        <button class="tab" data-tab="cfg" id="tab-cfg">
+          <span class="tab-icon">⚙</span>
+          Hello.cfg
+        </button>
+      </div>
+      <div class="pane-content">
+        <div id="tla-editor-container" class="editor-container active">
+          <pre class="editor-placeholder"><code>---- MODULE Hello ----
+EXTENDS Naturals
+
+VARIABLE x
+
+Init == x = 0
+
+Next == x' = x + 1
+
+Spec == Init /\ [][Next]_x
+====</code></pre>
+        </div>
+        <div id="cfg-editor-container" class="editor-container">
+          <pre class="editor-placeholder"><code>SPECIFICATION Spec
+INVARIANT x &lt; 10</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Resize Handle -->
+    <div id="resize-handle" class="resize-handle" title="Drag to resize panes"></div>
+
+    <!-- Right Pane: Output -->
+    <section id="output-pane" class="pane">
+      <div class="pane-tabs">
+        <button class="tab active" data-tab="output">
+          <span class="tab-icon">📋</span>
+          Output
+        </button>
+      </div>
+      <div class="pane-content">
+        <div id="output-container" class="output-container">
+          <div class="output-placeholder">
+            <span class="output-placeholder-icon">⊳</span>
+            <p>Click <strong>Run</strong> to start model checking.</p>
+            <p class="output-hint">The TLC model checker output will appear here.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>

@@ -96,8 +96,8 @@ In later iterations, we can introduce local file system integration (using the F
 For the MVP, we will stick to a text-based configuration. Users will manually write `.cfg` code within a dedicated Monaco editor tab. The application will parse and pass this configuration text alongside the `.tla` code when invoking the model checker.
 
 ## Core Tech Stack
-- **Language:** **Vanilla TypeScript** to avoid heavy UI frameworks like React/Vue for the core layer. This keeps the footprint minimal and performance high, given much of the UI is canvas/editor driven.
-- **Build Tool:** **Vite**, offering exceptionally fast reloading and native-like support for WebAssembly and Web Worker setups.
+- [x] **Language:** **Vanilla TypeScript** to avoid heavy UI frameworks like React/Vue for the core layer. This keeps the footprint minimal and performance high, given much of the UI is canvas/editor driven.
+- [x] **Build Tool:** **Vite**, offering exceptionally fast reloading and native-like support for WebAssembly and Web Worker setups.
 
 ## Offline Support (Progressive Web App)
 For the MVP, the editor will require an active internet connection to download the CheerpJ runtime and the `tla2tools.jar`. However, the architecture will be designed with Progressive Web App (PWA) patterns in mind. Eventually, Service Workers will cache all assets, allowing users to write and check models while completely disconnected from the internet.

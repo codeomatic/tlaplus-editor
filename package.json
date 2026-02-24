@@ -1,0 +1,16 @@
+{
+    "name": "tlaplus-editor",
+    "private": true,
+    "version": "0.0.1",
+    "description": "A fully client-side, browser-based TLA+ editor and model checker",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "preview": "vite preview"
+    },
+    "devDependencies": {
+        "typescript": "~5.9.3",
+        "vite": "^7.3.1"
+    }
+}
