@@ -113,9 +113,9 @@ For the MVP, the editor will require an active internet connection to download t
 TLC Model Checking is an intensely CPU- and memory-heavy process. To prevent the main browser UI (including the Monaco editor) from freezing, `tla2tools.jar` and the CheerpJ runtime will be executed inside a dedicated **Web Worker**. The main thread will communicate with the worker strictly via asynchronous message passing, ensuring a smooth typing experience even during long checks.
 
 ## Catching Infinite Runs (Safe Cancellation)
-Model checks can theoretically run indefinitely or trigger state-space explosions. We must provide an immediate, reliable "Stop" function. Because TLC runs within an isolated Web Worker, cancellation is straightforward and safe: we simply call `worker.terminate()` to discard the thread and spin up a fresh Web Worker for the next execution.
+Model checks can theoretically run indefinitely or trigger state-space explosions. We must provide an immediate, reliable "Stop" function. Because TLC runs within an isolated Web Worker, cancellation is straightforward and safe: we simply call `worker.terminate()` to discard the thread and spin up a fresh Web Worker for the next execution. **[Implemented]**
 
 ## Memory Limits & Monitoring
 Modern browsers impose strict memory limits on WebAssembly instances (typically around 2GB to 4GB depending on the browser/system architecture). 
-To prevent the tab from silently crashing with an "Out of Memory" (OOM) error, we will configure TLC with strict heap limits (via `-Xmx` or equivalent parameters, if supported) at launch. 
+To prevent the tab from silently crashing with an "Out of Memory" (OOM) error, we investigated configuring TLC with strict heap limits (via `-Xmx` or equivalent parameters). It was determined that CheerpJ leverages native WebAssembly memory allocation dynamically; thus, standard JVM memory formatting (`-Xmx`) is neither supported nor required for the `cheerpJRunMain` invocation. **[Implemented/Adjusted]**
 Additionally, the UI should feature a **Memory Usage Indicator** to give users real-time feedback on how much memory their model is consuming.

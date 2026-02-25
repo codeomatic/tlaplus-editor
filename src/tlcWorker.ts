@@ -17,9 +17,10 @@ export interface TLCWorkerRequest {
  * Type definition for messages sent from Worker to UI
  */
 export interface TLCWorkerResponse {
-    type: 'STDOUT' | 'STDERR' | 'EXIT';
+    type: 'STDOUT' | 'STDERR' | 'EXIT' | 'MEM';
     data?: string;
     exitCode?: number;
+    memory?: number;
 }
 
 // Ensure init happens only once
@@ -95,6 +96,15 @@ async function runTLC(tlaContent: string, cfgContent: string) {
 
     ctx.postMessage({ type: 'STDOUT', data: '\n==== Starting TLC ====\n\n' });
 
+    let memInterval: number | undefined;
+    memInterval = setInterval(() => {
+        // Use non-standard performance.memory if available (Chrome/Edge)
+        if ((performance as any).memory) {
+            const usedMB = Math.round((performance as any).memory.usedJSHeapSize / (1024 * 1024));
+            ctx.postMessage({ type: 'MEM', memory: usedMB });
+        }
+    }, 1000);
+
     // Run the TLC jar
     const exitCode = await cheerpjRunMain(
         'tlc2.TLC',
@@ -103,6 +113,8 @@ async function runTLC(tlaContent: string, cfgContent: string) {
         '-config', `/str/${moduleName}.cfg`,
         `/str/${moduleName}.tla`
     );
+
+    if (memInterval) clearInterval(memInterval);
 
     ctx.postMessage({ type: 'STDOUT', data: `\n==== TLC Exited with code ${exitCode} ====\n` });
     ctx.postMessage({ type: 'EXIT', exitCode });

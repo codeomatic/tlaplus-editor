@@ -123,6 +123,12 @@ function setupRunButton(): void {
     btnRun.disabled = true;
     btnStop.disabled = false;
 
+    const statusEl = document.getElementById('run-status');
+    if (statusEl) {
+      statusEl.textContent = 'Running...';
+      statusEl.className = 'run-status running';
+    }
+
     // Terminate existing worker if any
     if (tlcWorker) {
       tlcWorker.terminate();
@@ -144,6 +150,21 @@ function setupRunButton(): void {
         btnStop.disabled = true;
         tlcWorker?.terminate();
         tlcWorker = null;
+
+        const statusEl = document.getElementById('run-status');
+        if (statusEl) {
+          statusEl.textContent = 'Finished';
+          statusEl.className = 'run-status';
+        }
+      } else if (res.type === 'MEM' && res.memory !== undefined) {
+        const memValue = document.querySelector('.memory-value');
+        const memBarFill = document.querySelector('.memory-bar-fill') as HTMLElement;
+        if (memValue) memValue.textContent = `${res.memory}MB`;
+        if (memBarFill) {
+          // Assume max expected memory is roughly 2000MB for progress bar visual
+          const percent = Math.min(100, (res.memory / 2000) * 100);
+          memBarFill.style.width = `${percent}%`;
+        }
       }
     };
 
@@ -153,6 +174,12 @@ function setupRunButton(): void {
       btnStop.disabled = true;
       tlcWorker?.terminate();
       tlcWorker = null;
+
+      const statusEl = document.getElementById('run-status');
+      if (statusEl) {
+        statusEl.textContent = 'Error';
+        statusEl.className = 'run-status stopped';
+      }
     };
 
     // Send the RUN command with the code
@@ -172,6 +199,12 @@ function setupRunButton(): void {
     }
     btnRun.disabled = false;
     btnStop.disabled = true;
+
+    const statusEl = document.getElementById('run-status');
+    if (statusEl) {
+      statusEl.textContent = 'Stopped';
+      statusEl.className = 'run-status stopped';
+    }
   });
 }
 
