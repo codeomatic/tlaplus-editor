@@ -9,6 +9,7 @@ Traditional TLA+ environments require installing Java, downloading the Toolbox, 
 - **Client-Side Model Checking:** Runs `tla2tools.jar` via CheerpJ right in the browser.
 - **Modern Editing:** Provides a robust code editing experience powered by Monaco Editor.
 - **Semantic Highlighting:** Accurate TLA+ syntax highlighting using Tree-sitter AST parsing.
+- **Real-Time Diagnostics:** Instantly flags syntax errors with red squiggly lines as you type via the Abstract Syntax Tree.
 - **Safe Cancellation:** Supports stopping the model checker mid-run securely by discarding the isolated Web Worker thread.
 - **Memory Monitoring:** Real-time visibility into the memory usage of the running TLC process (Chromium-based browsers only).
 - **Zero-Setup:** Opens and works without downloading JVMs or toolchains.

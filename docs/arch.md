@@ -8,8 +8,8 @@ Traditional TLA+ environments require installing Java, downloading the Toolbox, 
 
 - [x] **Client-Side Model Checking:** Run `tla2tools.jar` (which contains the TLC model checker) entirely in the browser using CheerpJ 4.2 (Java 11).
 - [ ] **Modern Editing Experience:** Provide a robust, feature-rich code editor for writing TLA+ specifications.
-- [ ] **Advanced Syntax Highlighting:** Deliver accurate, semantic syntax highlighting for TLA+ code using sophisticated AST-based parsing.
-- [ ] **Interactive Outputs & Diagnostics:** Parse the output of the TLC model checker to show states, values, and error traces in a structured UI, and map errors directly back to the code editor.
+- [x] **Advanced Syntax Highlighting:** Deliver accurate, semantic syntax highlighting for TLA+ code using sophisticated AST-based parsing, along with real-time on-the-fly syntax error diagnostics.
+- [x] **Interactive Outputs & Diagnostics:** Parse the output of the TLC model checker to show states, values, and error traces in a structured UI, and map runtime/semantic errors directly back to the code editor.
 
 ---
 
@@ -83,7 +83,7 @@ Instead of dumping raw terminal text to the screen, we will explicitly parse the
 
 This parsed data will drive:
 1. **Interactive Results UI**: A structured viewer (such as an error-state tree or step-by-step table) for traces, similar to the TLA+ VS Code extension.
-2. **Editor Diagnostics**: Syntax and runtime errors will be mapped back to Monaco Editor markers, providing standard "red squiggly lines" at the exact line and column where the error occurred.
+2. **Editor Diagnostics**: Semantic and runtime errors will be mapped back to Monaco Editor markers upon TLC completion. Syntax errors are evaluated instantly as you type using Tree-sitter's AST parsing, providing standard "red squiggly lines" at the exact line and column where the error occurred without needing to execute a run.
 
 ## Standard Library Support
 TLA+ specifications frequently rely on standard modules (e.g., `Naturals`, `Sequences`, `TLC`). Since `tla2tools.jar` natively bundles these libraries, the CheerpJ JVM will naturally resolve them during the model checking phase without requiring extra network requests or manual file creation.

@@ -1,7 +1,7 @@
-# Stage 6: TLC Output Parsing and Editor Diagnostics
+# Stage 6: TLC Output Parsing and Editor Diagnostics [COMPLETED]
 
 ## Description
-This milestone improves the developer experience by moving away from raw text logs for errors. It parses the TLC output to identify syntax and runtime errors and visually maps them back into the Monaco Editor.
+This milestone improves the developer experience by moving away from raw text logs for errors. It parses the TLC runtime output to identify semantic errors, and leverages the Tree-sitter AST to instantly highlight syntax errors during typing, visually mapping both modes back into the Monaco Editor.
 
 ## What exactly needs to be built
 1. Write a parsing module that intercepts the text stream from the TLC Web Worker.

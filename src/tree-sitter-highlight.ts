@@ -190,8 +190,12 @@ class TLAPlusSemanticTokensProvider
         if (!tree) return null;
 
         const tokens: TokenData[] = [];
-        walkTree(tree.rootNode, tokens);
+        const errorMarkers: monaco.editor.IMarkerData[] = [];
+        walkTree(tree.rootNode, tokens, errorMarkers);
         tree.delete();
+
+        // Broadcast markers on-the-fly for real-time syntax error checking
+        monaco.editor.setModelMarkers(model, 'tree-sitter', errorMarkers);
 
         // Sort tokens by position
         tokens.sort((a, b) => a.line - b.line || a.char - b.char);
@@ -223,7 +227,19 @@ class TLAPlusSemanticTokensProvider
 // AST walker
 // ──────────────────────────────────────────────
 
-function walkTree(node: TSNode, tokens: TokenData[]): void {
+function walkTree(node: TSNode, tokens: TokenData[], errorMarkers: monaco.editor.IMarkerData[]): void {
+    if (node.type === 'ERROR' || node.isMissing) {
+        errorMarkers.push({
+            severity: monaco.MarkerSeverity.Error,
+            message: node.isMissing ? `Syntax Error: Missing expected ${node.type}` : 'Syntax Error: Unexpected code',
+            startLineNumber: node.startPosition.row + 1,
+            startColumn: node.startPosition.column + 1,
+            endLineNumber: node.endPosition.row + 1,
+            // Ensure width is at least 1 column so the red squiggly is visible
+            endColumn: Math.max(node.startPosition.column + 2, node.endPosition.column + 1)
+        });
+    }
+
     const tokenType = getTokenType(node);
 
     if (tokenType !== null) {
@@ -278,7 +294,7 @@ function walkTree(node: TSNode, tokens: TokenData[]): void {
     for (let i = 0; i < node.childCount; i++) {
         const child = node.child(i);
         if (child) {
-            walkTree(child, tokens);
+            walkTree(child, tokens, errorMarkers);
         }
     }
 }

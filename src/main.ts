@@ -1,7 +1,9 @@
 import './style.css';
-import { initEditors, layoutEditors, getTlaContent, getCfgContent } from './editor';
+import { initEditors, layoutEditors, getTlaContent, getCfgContent, getTlaModel } from './editor';
+import { parseTlcOutput } from './outputParser';
 import { registerLanguages } from './tlaplus-language';
 import { initTreeSitter } from './tree-sitter-highlight';
+import * as monaco from 'monaco-editor';
 
 import type { TLCWorkerRequest, TLCWorkerResponse } from './tlcWorker';
 
@@ -134,6 +136,14 @@ function setupRunButton(): void {
       tlcWorker.terminate();
     }
 
+    // Clear old markers when starting a new run
+    const model = getTlaModel();
+    if (model) {
+      monaco.editor.setModelMarkers(model, 'tlc', []);
+    }
+
+    let outputBuffer = '';
+
     // Spawn new classic worker (to support importScripts for CheerpJ)
     tlcWorker = new Worker(new URL('./tlcWorker.ts', import.meta.url));
 
@@ -141,6 +151,7 @@ function setupRunButton(): void {
       const res = e.data;
       if (res.type === 'STDOUT' || res.type === 'STDERR') {
         if (res.data) {
+          outputBuffer += res.data + '\n';
           outputContent.textContent += res.data;
           // Auto-scroll to bottom
           outputPane.scrollTop = outputPane.scrollHeight;
@@ -155,6 +166,18 @@ function setupRunButton(): void {
         if (statusEl) {
           statusEl.textContent = 'Finished';
           statusEl.className = 'run-status';
+        }
+
+        // Apply error markers if any were found in the output buffer
+        if (model) {
+          const markers = parseTlcOutput(outputBuffer);
+          if (markers.length > 0) {
+            monaco.editor.setModelMarkers(model, 'tlc', markers);
+            if (statusEl) {
+              statusEl.textContent = 'Error Found';
+              statusEl.className = 'run-status stopped';
+            }
+          }
         }
       } else if (res.type === 'MEM' && res.memory !== undefined) {
         const memValue = document.querySelector('.memory-value');

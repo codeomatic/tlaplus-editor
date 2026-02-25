@@ -149,6 +149,13 @@ export function getTlaContent(): string {
 }
 
 /**
+ * Get the TLA+ editor model.
+ */
+export function getTlaModel(): monaco.editor.ITextModel | null {
+    return tlaEditor?.getModel() ?? null;
+}
+
+/**
  * Get the CFG editor content.
  */
 export function getCfgContent(): string {
