@@ -11,6 +11,7 @@ export interface TLCWorkerRequest {
     type: 'RUN';
     tlaContent: string;
     cfgContent: string;
+    baseUrl: string;
 }
 
 /**
@@ -60,7 +61,7 @@ ctx.addEventListener('message', async (event: MessageEvent<TLCWorkerRequest>) =>
 
     if (req.type === 'RUN') {
         try {
-            await runTLC(req.tlaContent, req.cfgContent);
+            await runTLC(req.tlaContent, req.cfgContent, req.baseUrl);
         } catch (error) {
             ctx.postMessage({ type: 'STDERR', data: `Worker error: ${error}` });
             ctx.postMessage({ type: 'EXIT', exitCode: 1 });
@@ -68,7 +69,7 @@ ctx.addEventListener('message', async (event: MessageEvent<TLCWorkerRequest>) =>
     }
 });
 
-async function runTLC(tlaContent: string, cfgContent: string) {
+async function runTLC(tlaContent: string, cfgContent: string, baseUrl: string) {
     if (!isCheerpJInitialized) {
         ctx.postMessage({ type: 'STDOUT', data: 'Initializing CheerpJ JVM environment...\n' });
 
@@ -105,10 +106,13 @@ async function runTLC(tlaContent: string, cfgContent: string) {
         }
     }, 1000);
 
+    // Use CheerpJ's /app mount with the actual correct pathname derived from the base URL
+    const jarPath = '/app' + new URL('tla2tools.jar', baseUrl).pathname;
+
     // Run the TLC jar
     const exitCode = await cheerpjRunMain(
         'tlc2.TLC',
-        '/app/tla2tools.jar', // Virtual mount of our local public/tla2tools.jar
+        jarPath, // Virtual mount of our local public/tla2tools.jar
         '-metadir', '/files/states', // Use CheerpJ's writable IndexedDB filesystem for TLC metadata
         '-config', `/str/${moduleName}.cfg`,
         `/str/${moduleName}.tla`

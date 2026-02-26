@@ -138,10 +138,12 @@ let parser: Parser | null = null;
  * Initialize web-tree-sitter and load the TLA+ grammar.
  */
 export async function initTreeSitter(): Promise<void> {
+    const baseUri = document.baseURI;
+
     await Parser.init({
         locateFile: (scriptName: string) => {
             if (scriptName.includes('tree-sitter')) {
-                return `/tree-sitter.wasm`;
+                return new URL('tree-sitter.wasm', baseUri).href;
             }
             return scriptName;
         },
@@ -149,7 +151,7 @@ export async function initTreeSitter(): Promise<void> {
 
     parser = new Parser();
 
-    const tlaLang = await Language.load('/tree-sitter-tlaplus.wasm');
+    const tlaLang = await Language.load(new URL('tree-sitter-tlaplus.wasm', baseUri).href);
     parser.setLanguage(tlaLang);
 
     // Register semantic tokens provider

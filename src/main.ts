@@ -210,6 +210,7 @@ function setupRunButton(): void {
       type: 'RUN',
       tlaContent,
       cfgContent,
+      baseUrl: document.baseURI,
     };
     tlcWorker.postMessage(req);
   });

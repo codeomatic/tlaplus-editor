@@ -4,6 +4,8 @@ A fully client-side, browser-based TLA+ editor and model checker.
 
 Traditional TLA+ environments require installing Java, downloading the Toolbox, or managing command-line tools. This project eliminates that friction by allowing users to write TLA+ specifications and run the TLC model checker directly in their web browser, without requiring a backend server or any local installations.
 
+🚀 **Try it online:** [https://codeomatic.github.io/tlaplus-editor/](https://codeomatic.github.io/tlaplus-editor/)
+
 ## Features (In Progress)
 
 - **Client-Side Model Checking:** Runs `tla2tools.jar` via CheerpJ right in the browser.
